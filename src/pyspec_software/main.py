@@ -93,7 +93,7 @@ def main():
     appID = "PySpecViewer Software"  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(appID)
     app = App(sys.argv)
-    app.setWindowIcon(QIcon(".\\gui\\pyspec_less_ugly_shorter.ico"))
+    app.setWindowIcon(QIcon(".\\gui\\pyspec_less_ugly_shorter.png"))
     sys.exit(app.exec_())
 
 

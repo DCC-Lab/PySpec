@@ -31,8 +31,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def setup_window_tabs(self):
         self.tabWidget = QTabWidget()
         self.setCentralWidget(self.tabWidget)
-        self.tabWidget.addTab(self.controlView, "Control View")
         self.tabWidget.addTab(self.dataView, "Data View")
+        self.tabWidget.addTab(self.controlView, "Image Control")
+
 
     def setup_menuBar(self):
         pass
