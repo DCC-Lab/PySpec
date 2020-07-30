@@ -40,7 +40,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def setup_statusBar(self):
         self.statusBarMessage = QLabel()
         self.statusbar.addWidget(self.statusBarMessage)
-        self.controlView.device.s_pid_changed.connect(self.display_message)
         self.dataView.s_messageBar.connect(self.display_message)
 
     @pyqtSlot(str)

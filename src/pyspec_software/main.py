@@ -11,7 +11,10 @@ from PyQt5.QtWidgets import QApplication, QSplashScreen
 from PyQt5.QtCore import Qt, QTimer, QSize
 from PyQt5.QtGui import QPixmap, QPainter, QMovie, QIcon, QFontDatabase
 from pyspec_software.gui.mainWindow import MainWindow
+from pyspec_software.MainModel import MainModel
+from pyspec_software.MainController import MainController
 import sys
+import time
 import ctypes
 import logging
 import logging.config
@@ -29,8 +32,30 @@ class App(QApplication):
         self.init_logging()
         self.setAttribute(Qt.AA_EnableHighDpiScaling)
         self.setStyle("Fusion")
-        self.mainWindow = MainWindow()
-        self.mainWindow.setWindowTitle("iFBG-SrainMeter")
+        self.splash()
+
+    def splash(self):
+        pixmap = QPixmap(".\\gui\\pyspec_less_ugly_shorter.png")
+        smallerPixmap = pixmap.scaled(256, 256, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        splash = QSplashScreen(smallerPixmap, Qt.WindowStaysOnTopHint)
+        splash.setMask(smallerPixmap.mask())
+        splash.setWindowFlag(Qt.WindowStaysOnTopHint)
+        splash.show()
+        self.processEvents()
+        self.init_logging()
+        self.processEvents()
+        log.info("Initialization of views, models, controllers...")
+        time.sleep(2)
+        self.processEvents()
+        self.mainModel = MainModel()
+        self.mainCtrl = MainController()
+        self.mainWindow = MainWindow(self.mainModel, self.mainCtrl)
+        self.mainWindow.setWindowTitle("PySpec Software")
+        self.mainWindow.setAttribute(Qt.WA_AlwaysStackOnTop)
+        self.processEvents()
+        log.info("Initialization completed.")
+        self.processEvents()
+
         self.mainWindow.show()
         log.info("This is the MAIN THREAD")
 
@@ -68,7 +93,7 @@ def main():
     appID = "PySpecViewer Software"  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(appID)
     app = App(sys.argv)
-    app.setWindowIcon(QIcon(".\\gui\\pyspec_ugly.ico"))
+    app.setWindowIcon(QIcon(".\\gui\\pyspec_less_ugly_shorter.ico"))
     sys.exit(app.exec_())
 
 

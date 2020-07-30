@@ -40,19 +40,10 @@ class DataView(QWidget, Ui_dataView):
         self.formattedDataDict = {}
 
     def search_devices(self):
-        deviceList = self.visaDevice.refresh_resource_list()
-        self.cb_device.clear()
-        self.cb_device.addItems(deviceList)
+        pass
 
     def try_device_connection(self):
-        try:
-            deviceName = self.cb_device.currentText()
-            self.visaDevice.change_instrument(deviceName)
-            self.s_messageBar.emit("connection to {} succesful".format(deviceName))
-
-        except Exception as e:
-            print(e)
-            self.s_messageBar.emit(str(e))
+        pass
 
     def initialize_view(self):
         pass
@@ -61,14 +52,50 @@ class DataView(QWidget, Ui_dataView):
         pass
 
     def connect_buttons(self):
-        self.pb_connect.clicked.connect(lambda: self.try_device_connection())
-        self.pb_startAcquisition.clicked.connect(lambda: self.start_acquisition_thread())
-        self.pb_search.clicked.connect(lambda: self.search_devices())
-        self.s_data_ready.connect(lambda: self.data_analysis())
-        self.s_data_plot_ready.connect(self.update_graph)
+        pass
+        # self.pb_connect.clicked.connect()
+        # self.pb_startAcquisition.clicked.connect()
+        # self.pb_search.clicked.connect()
+        # self.s_data_ready.connect()
+        # self.s_data_plot_ready.connect()
 
     def connect_threads(self):
-        pass
+        self.acqThread = QThread()
+        self.acqWorker = Worker(self.acquisition_routine)
+        self.acqWorker.moveToThread(self.acqThread)
+        self.acqThread.started.connect(self.acqWorker.run)
+        self.acqThread.finished.connect(lambda: self.s_messageBar.emit("acquisitionThread ended."))
+
+        self.dataAnalysisThread = QThread()
+        self.dataAnalysisWorker = Worker(self.data_analysis_routine)
+        self.dataAnalysisWorker.moveToThread(self.dataAnalysisThread)
+        self.dataAnalysisThread.started.connect(self.dataAnalysisWorker.run)
+        self.dataAnalysisThread.finished.connect(lambda: self.s_messageBar.emit("dataAnalysisThread ended."))
+
+    def acquisition_routine(self, *args, **kwargs):
+        self.data_acquisition_routine()
+        while self.chb_loop.isChecked():
+            self.data_acquisition_routine()
+        self.acqThread.terminate()
+
+    def data_acquisition_routine(self, *args, **kwargs):
+        log.info("Acquisition Begun...")
+
+    def data_analysis_routine(self, *args, **kwargs):
+        log.info("Data Analysis Begun...")
 
     def connect_signals(self):
         pass
+
+    def clear_graph(self):
+        self.allPlotsDict["plotDataItem"].clear()
+
+    def create_plots(self):
+        self.plotDict = {"plotItem": PlotItem(), "plotDataItem": None, "displayed": 1}
+        self.pyqtgraphWidget.addItem(self.plotDict["plotItem"])
+        self.plotDict["plotDataItem"] = self.plotDict["plotItem"].plot()
+
+    @pyqtSlot(dict)
+    def update_graph(self, data):
+        self.plotDict["plotDataItem"].setData(**data)
+        log.debug("Data confirmed")
