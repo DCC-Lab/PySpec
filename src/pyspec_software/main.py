@@ -10,9 +10,9 @@ __status__ = "Production"
 from PyQt5.QtWidgets import QApplication, QSplashScreen
 from PyQt5.QtCore import Qt, QTimer, QSize
 from PyQt5.QtGui import QPixmap, QPainter, QMovie, QIcon, QFontDatabase
-from pyspec_software.gui.mainWindow import MainWindow
-from pyspec_software.MainModel import MainModel
-from pyspec_software.MainController import MainController
+from gui.mainWindow import MainWindow
+from MainModel import MainModel
+from MainController import MainController
 import sys
 import time
 import ctypes

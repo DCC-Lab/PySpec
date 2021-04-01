@@ -1,5 +1,5 @@
-from pyspec_software.gui.controlView import ControlView
-from pyspec_software.gui.dataView import DataView
+from .controlView import ControlView
+from .dataView import DataView
 from PyQt5.QtWidgets import QMainWindow, QWidget, QLabel, QVBoxLayout, QTabWidget, QAction
 from PyQt5.QtCore import Qt, pyqtSlot
 import logging
